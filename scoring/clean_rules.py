@@ -17,8 +17,13 @@ MAX_CUE_SECONDS = 30.0
 # (never deleted) but reported so a human can extend the list.
 ANNOTATION_WHITELIST = {
     "laugh": "[laughs]", "laughs": "[laughs]", "laughing": "[laughs]",
+    "cough": "[cough]", "coughs": "[cough]", "coughing": "[cough]",
+    "breath": "[breath]", "breathing": "[breath]",
+    "pause": "[pause]",
     "unintelligible": "[unintelligible]", "inaudible": "[unintelligible]",
+    "*inaudible": "[unintelligible]",
     "?": "[unintelligible]", "??": "[unintelligible]", "???": "[unintelligible]",
+    "ov": "[ov]", "/ov": "[/ov]",
 }
 
 _RE_PAREN_UNINTELLIGIBLE = re.compile(r"\(\?+\)")

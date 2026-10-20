@@ -27,11 +27,18 @@ SCORES_DIR = SCRIPT_DIR.parent / "sessions" / "scores_legacy"
 # Strip transcriber annotations like {laughs} or [unintelligible] before
 # scoring -- no ASR system can output these tokens, so leaving them in the
 # reference would count every one as an unfair, unrecoverable deletion.
-_RE_ANNOT = re.compile(r"\{[^}]*\}|\[[^\]]*\]")
+_RE_ANNOT = re.compile(r"\{[^}]*\}|\[[^\]]*\]|\([^()]*\)")
 
 
 def strip_annotations(text):
-    return " ".join(_RE_ANNOT.sub(" ", text).split())
+    # Looped so nested annotations like the unclear-overlap marker "((  ))"
+    # are fully removed, not just their innermost level.
+    while True:
+        new = _RE_ANNOT.sub(" ", text)
+        if new == text:
+            break
+        text = new
+    return " ".join(text.split())
 
 TRANSFORM = jiwer.Compose([
     jiwer.ToLowerCase(),

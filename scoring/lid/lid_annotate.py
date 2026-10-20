@@ -32,7 +32,7 @@ AMBIG = {
 LOAN = {"ok", "okay", "email", "internet", "online", "zoom", "chat", "link",
         "quiz", "test", "click", "wifi", "app", "software", "笑"}
 FILLER_ES = {"eh", "este", "pues", "bueno", "o sea", "mmm", "ajam"}
-FILLER_EN = {"um", "uh", "mhm", "hmm", "like", "yeah", "okay", "so", "well"}
+FILLER_EN = {"um", "uh", "mhm", "aha", "hmm", "like", "yeah", "okay", "so", "well"}
 
 _RE_NUM = re.compile(r"^[\d.,:%-]+$")
 

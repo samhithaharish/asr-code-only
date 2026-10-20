@@ -15,6 +15,12 @@ removal and other normalization rules are in `scoring/normalize_text.py`
 and `scoring/normalization_rules.py`. Language classification is in
 `scoring/lid/`.
 
+## Guidelines
+
+`GUIDELINES.md` is the manual transcription handout the normalization
+rules are built to match (annotation tags, filler spellings, cut-off/
+false-start markers, overlap markers).
+
 ## License
 
 See `LICENSE`.

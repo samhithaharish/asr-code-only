@@ -26,21 +26,35 @@ PUNCTUATION_TO_REMOVE = ",?¿¡!\";:."
 _ELLIPSIS_SENTINEL = "\x00E\x00"
 
 _RE_BRACKET_TAG = re.compile(r"\[[^\]]*\]")
-_RE_PAREN_UNINTELLIGIBLE = re.compile(r"\(\?+\)")
+# Parenthetical annotations: correction pairs (verbatim=target), unclear
+# overlap ((  )), and unintelligible markers (???) are all meta-annotation,
+# never literal spoken text, so the whole span is stripped like [...]/{...}.
+_RE_PAREN_ANNOTATION = re.compile(r"\([^()]*\)")
 _RE_TOKEN_FINAL_ELLIPSIS = re.compile(r"(?<=\w)\.{2,}")
 _RE_PUNCT = re.compile("[" + re.escape(PUNCTUATION_TO_REMOVE) + "]")
 _RE_WHITESPACE = re.compile(r"\s+")
 
 
+def _strip_paren_annotations(text: str) -> str:
+    """Repeatedly strip innermost (...) spans so nested annotations like the
+    unclear-overlap marker "((  ))" are fully removed, not just their
+    innermost level."""
+    while True:
+        new = _RE_PAREN_ANNOTATION.sub(" ", text)
+        if new == text:
+            return new
+        text = new
+
+
 def _cs_normalize(text: str, lowercase: bool = True) -> str:
-    """Bracket tags, paren unintelligible markers, disfluency-ellipsis
-    protection, and punctuation removal, in the order that preserves
-    token-final ellipses."""
+    """Bracket/brace/paren annotation tags, disfluency-ellipsis protection,
+    and punctuation removal, in the order that preserves token-final
+    ellipses."""
     if text is None:
         return ""
     out = unicodedata.normalize("NFC", str(text))
     out = _RE_BRACKET_TAG.sub(" ", out)
-    out = _RE_PAREN_UNINTELLIGIBLE.sub(" ", out)
+    out = _strip_paren_annotations(out)
     out = out.replace("…", "...")
     out = _RE_TOKEN_FINAL_ELLIPSIS.sub(_ELLIPSIS_SENTINEL, out)
     out = " ".join(tok for tok in out.split() if set(tok) != {"."})
